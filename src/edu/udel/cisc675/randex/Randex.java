@@ -20,6 +20,7 @@ public class Randex {
 
     /* Random number generator */
     private RandomGenerator rand;
+	private FisherYatesShuffle fys;
 
     // The other modules that will be instaniated and executed...
     
@@ -64,6 +65,7 @@ public class Randex {
 		PrintStream out = System.out;
 
 		rand = new Random(seed);
+		fys = new FisherYatesShuffle(rand);
 
 		fileStorage = FileStorage.getInstance();
 		problemStorage = ProblemStorage.getInstance();
@@ -80,14 +82,10 @@ public class Randex {
 
 		int nprob = problemStorage.getProblemStarts().length;
 
-		randomizeProblems = new RandomizeProblems(nprob, rand);
+		randomizeProblems = new RandomizeProblems(nprob, fys);
 		randomizeProblems.execute();
 
-		int[] numAnswers = new int[nprob];
-		for (int i=0; i<nprob; i++)
-			numAnswers[i] = answerStorage.getNumAnswers(i);
-
-		randomizeAnswers = new RandomizeAnswers(numAnswers, rand);
+		randomizeAnswers = new RandomizeAnswers(answerStorage, nprob, fys);
 		randomizeAnswers.execute();
 
 		Output output = new Output

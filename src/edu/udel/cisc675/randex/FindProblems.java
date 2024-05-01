@@ -38,12 +38,12 @@ public class FindProblems {
 		int n = fileStorage.getChars().length;
 		boolean inProblem = false; // is i currently inside a problem?
 		for (int i=0; i<n; i++) {
-			if (match(fileStorage.getChars(), i, ProblemStorage.beginProblem)) {
+			if (TextMatcher.match(fileStorage.getChars(), i, ProblemStorage.beginProblem)) {
 				if (inProblem)
 					throw new RuntimeException("Encountered \\begin{problem} when inside a problem");
 				startList.add(i);
 				inProblem = true;
-			} else if (match(fileStorage.getChars(), i, ProblemStorage.endProblem)) {
+			} else if (TextMatcher.match(fileStorage.getChars(), i, ProblemStorage.endProblem)) {
 				if (!inProblem)
 					throw new RuntimeException("Encountered \\end{problem} when outside any problem");
 				inProblem = false;

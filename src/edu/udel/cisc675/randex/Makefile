@@ -5,7 +5,7 @@
 SRC = Randex.java Input.java FindProblems.java FindAnswers.java \
   RandomizeProblems.java RandomizeAnswers.java Output.java \
   FileStorage.java ProblemStorage.java AnswerStorage.java \
-  ToArray.java
+  ToArray.java TextMatcher.java FisherYatesShuffle.java
 CLASSES = $(subst .java,.class,$(SRC))
 CP = ../../../..
 

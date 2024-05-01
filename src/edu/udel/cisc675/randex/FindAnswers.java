@@ -21,7 +21,6 @@ public class FindAnswers {
     FileStorage fileStorage;
 	ProblemStorage problemStorage;
 	AnswerStorage answerStorage;
-
     
     /* Constructs new FindAnswers instance from the given data.  Sets
        the fields and does nothing else. */
@@ -31,19 +30,6 @@ public class FindAnswers {
 		this.answerStorage = answerStorage;
     }
 
-    /* Tells you whether the sequence of chars starting at position in
-       array chars matches those of c */
-    private boolean match(int off, char[] c) {
-		int n = c.length;
-		if (off+n > fileStorage.getChars().length)
-			return false;
-		for (int i=0; i<n; i++) {
-			if (c[i] != fileStorage.getChar(off+i))
-				return false;
-		}
-		return true;
-    }
-
     /* Finds the answers to the problem with ID pid, setting
        answerStarts[pid] and answerStops[pid].  */
     private void findAnswersInProblem(int pid) {
@@ -51,15 +37,15 @@ public class FindAnswers {
 			stopList = new ArrayList<>();
 		int i = problemStorage.getProblemStartsI(pid); // starting character index for problem pid
 		int stop = problemStorage.getProblemStopsI(pid);
-		for (; i < stop && !match(i, answerStorage.beginEnumerate); i++) ;
+		for (; i < stop && !TextMatcher.match(fileStorage.getChars(), i, answerStorage.beginEnumerate); i++) ;
 		if (i == stop)
 			throw new RuntimeException("No \\begin{enumerate} found for problem "+pid);
 		for (; i < stop; i++) {
-			if (match(i, answerStorage.endEnumerate)) {
+			if (TextMatcher.match(fileStorage.getChars(), i, answerStorage.endEnumerate)) {
 				if (!startList.isEmpty()) stopList.add(i);
 					break;
 			}
-			if (match(i, answerStorage.item)) {
+			if (TextMatcher.match(fileStorage.getChars(), i, answerStorage.item)) {
 				if (!startList.isEmpty()) stopList.add(i);
 				startList.add(i);
 			}
