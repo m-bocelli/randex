@@ -1,4 +1,5 @@
 package edu.udel.cisc675.randex;
+import java.util.ArrayList;
 
 /* Module FileStorage: hides the design decision behind
  * storing the contents of the latex file uploaded provided
@@ -27,12 +28,8 @@ public class ProblemStorage {
     }
 
     public void setProblems(ArrayList<Integer> start, ArrayList<Integer> stop, int size) {
-        probStarts = new int[size];
-		probStops = new int[size];
-        for (int i=0; i<size; i++) {
-            probStarts[i] = start[i];
-            probStops[i] = stop[i];
-        }
+        probStarts = ToArray.toArray(start);
+		probStops = ToArray.toArray(stop);
     }
 
     public int[] getProblemStarts() { return probStarts; }

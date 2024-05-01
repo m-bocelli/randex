@@ -25,6 +25,7 @@ public class Randex {
     
 	private FileStorage fileStorage;
 	private ProblemStorage problemStorage;
+	private AnswerStorage answerStorage;
     private Input input;
     private FindProblems findProblems;
     private FindAnswers findAnswers;
@@ -65,7 +66,8 @@ public class Randex {
 		rand = new Random(seed);
 
 		fileStorage = FileStorage.getInstance();
-		problemStorage = ProblemStorage.getInstace();
+		problemStorage = ProblemStorage.getInstance();
+		answerStorage = AnswerStorage.getInstance();
 
 		input = new Input(filename, fileStorage);
 		input.execute();
@@ -73,24 +75,23 @@ public class Randex {
 		findProblems = new FindProblems(fileStorage, problemStorage);
 		findProblems.execute();
 
-		int nprob = problemStorage.getProblemStarts.length;
-
-		findAnswers = new FindAnswers(fileStorage, problemStorage);
+		findAnswers = new FindAnswers(fileStorage, problemStorage, answerStorage);
 		findAnswers.execute();
+
+		int nprob = problemStorage.getProblemStarts().length;
 
 		randomizeProblems = new RandomizeProblems(nprob, rand);
 		randomizeProblems.execute();
 
 		int[] numAnswers = new int[nprob];
 		for (int i=0; i<nprob; i++)
-			numAnswers[i] = findAnswers.answerStarts[i].length;
+			numAnswers[i] = answerStorage.getNumAnswers(i);
 
 		randomizeAnswers = new RandomizeAnswers(numAnswers, rand);
 		randomizeAnswers.execute();
 
 		Output output = new Output
-			(out, fileStorage, findProblems.probStarts, findProblems.probStops,
-			findAnswers.answerStarts, findAnswers.answerStops,
+			(out, fileStorage, problemStorage, answerStorage,
 			randomizeProblems.probPerm,
 			randomizeAnswers.answerPerms);
 		output.execute();

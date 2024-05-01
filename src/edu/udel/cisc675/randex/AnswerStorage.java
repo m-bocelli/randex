@@ -1,4 +1,5 @@
 package edu.udel.cisc675.randex;
+import java.util.ArrayList;
 
 /* Module FileStorage: hides the design decision behind
  * storing the contents of the latex file uploaded provided
@@ -46,5 +47,9 @@ public class AnswerStorage {
 		answerStops = new int[size][];
     }
 
-    public void getProblemStarts() { return probStarts; }
+    public int getNumAnswers(int i) { return answerStarts[i].length; }
+
+    public int getAnswerStartsI(int i, int j) { return answerStarts[i][j]; }
+
+    public int getAnswerStopsI(int i, int j) { return answerStops[i][j]; }
 }

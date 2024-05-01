@@ -73,7 +73,7 @@ public class FindAnswers {
 
     /* Constructs answerStarts and answerStops. */
     public void execute() {
-		int nprob = problemStorage.getProblemStarts.length;
+		int nprob = problemStorage.getProblemStarts().length;
 		answerStorage.initAnswers(nprob);
 		for (int i=0; i<nprob; i++)
 			findAnswersInProblem(i);
