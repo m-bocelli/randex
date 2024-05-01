@@ -7,19 +7,19 @@ import java.io.PrintStream;
 public class Output {
 
     /* Output stream to write to */
-    PrintStream out;
+    private PrintStream out;
 
     /* The characters of the original file, from module Input */
-    FileStorage fileStorage;
-    ProblemStorage problemStorage;
-    AnswerStorage answerStorage;
+    private FileStorage fileStorage;
+    private ProblemStorage problemStorage;
+    private AnswerStorage answerStorage;
 
      /* Permutation of problem IDs, from module RandomizeProblems */
-    int[] probPerm;
+    private int[] probPerm;
 
     /* For each problem, permutation of answers, from module
      * RandomizeAnswers */
-    int[][] answerPerms;
+    private int[][] answerPerms;
 
     /* Constructs new instance of Output from given fields; only sets
        fields and does nothing else */

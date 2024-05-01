@@ -8,12 +8,12 @@ package edu.udel.cisc675.randex;
 public class RandomizeProblems {
 
     /* The number of problems (in) */
-    int nprob;
+    private int nprob;
 
     /* Permutation of problem IDs (out) */
-    int[] probPerm;
+    public int[] probPerm;
 
-    FisherYatesShuffle fys;
+    private FisherYatesShuffle fys;
 
     /* Constructs new instance from given fields.  Sets fields only,
        does nothing else. */

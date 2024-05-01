@@ -8,12 +8,12 @@ public class RandomizeAnswers {
 
     /* For each i in 0..numProblems - 1, the number of answers to
      * problem i (in). */
-    int[] numAnswers;
+    private int[] numAnswers;
 
     /* A permutation for each problem (out) */
-    int[][] answerPerms;
+    public int[][] answerPerms;
 
-	FisherYatesShuffle fys;
+	  private FisherYatesShuffle fys;
 
     /* Constructs new instance from given fields; sets the fields and
        does nothing else. */

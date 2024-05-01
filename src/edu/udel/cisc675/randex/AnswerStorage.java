@@ -22,12 +22,12 @@ public class AnswerStorage {
        answers to the i-th problem.  answerStarts[i][j] is the index
        in chars of the first character of the j-th answer to the i-th
        problem. */
-    int[][] answerStarts;
+    private int[][] answerStarts;
 
     /* Like answerStarts, except it gives the stop index of each
        answer (out).  That is 1 greater than the index of the last
        character of the answer. */
-    int[][] answerStops;
+    private int[][] answerStops;
 
     private AnswerStorage() {}
 

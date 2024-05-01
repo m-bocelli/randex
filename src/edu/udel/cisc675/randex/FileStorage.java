@@ -1,5 +1,4 @@
 package edu.udel.cisc675.randex;
-import java.io.FileReader;
 
 /* Module FileStorage: hides the design decision behind
  * storing the contents of the latex file uploaded provided

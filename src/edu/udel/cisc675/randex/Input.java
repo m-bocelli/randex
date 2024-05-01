@@ -11,15 +11,15 @@ import java.io.IOException;
 public class Input {
 
     /* The name of the original file containing the exam (in) */
-    String filename;
+    private String filename;
 
-	FileStorage fileStorage;
+    private FileStorage fileStorage;
 
     /* Constructs a new instance with given filename.  Sets the
        filename field and does nothing else */
     public Input(String filename, FileStorage fileStorage) {
-		this.filename = filename;
-		this.fileStorage = fileStorage;
+      this.filename = filename;
+      this.fileStorage = fileStorage;
     }
 
     /* Opens the file, reads it, and constructs chars. */
