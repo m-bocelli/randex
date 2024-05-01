@@ -12,70 +12,49 @@ import java.util.ArrayList;
    by module Input, then call method execute, then read the fields
    probStarts and probStops. */
 public class FindProblems {
-
-    /* "\begin{problem}" as character array. */
-    public final static char[] beginProblem =
-	"\\begin{problem}".toCharArray();
-
-    /* "\end{problem}" as character array. */
-    public final static char[] endProblem =
-	"\\end{problem}".toCharArray();
-
-    /* The characters of the original file, from module Input (in). */
-    char[] chars;
-
-    /* The start index of each problem (out). */
-    int[] probStarts;
-
-    /* The stop index of each problem (out). */
-    int[] probStops;
+    FileStorage fileStorage;
+	ProblemStorage problemStorage;
 
     /* Constructor: sets chars field and does nothing else. */
-    public FindProblems(char[] chars) {
-	this.chars = chars;
+    public FindProblems(FileStorage fileStorage, ProblemStorage problemStorage) {
+		this.fileStorage = fileStorage;
+		this.problemStorage = problemStorage;
     }
 
     /* Determines whether the sequence of characters in chars starting
        at offset off matches the chars of sought. */
     private static boolean match(char[] chars, int off, char[] sought) {
-	for (int i=0; i<sought.length; i++) {
-	    if (off+i >= chars.length || sought[i] != chars[off+i])
-		return false;
-	}
-	return true;
+		for (int i=0; i<sought.length; i++) {
+			if (off+i >= chars.length || sought[i] != chars[off+i])
+			return false;
+		}
+		return true;
     }
 
     /* Constructs probStarts and probStops. */
     public void execute() {
-	ArrayList<Integer> startList = new ArrayList<>(),
-	    stopList = new ArrayList<>();
-	int n = chars.length;
-	boolean inProblem = false; // is i currently inside a problem?
-	for (int i=0; i<n; i++) {
-	    if (match(chars, i, beginProblem)) {
+		ArrayList<Integer> startList = new ArrayList<>(),
+			stopList = new ArrayList<>();
+		int n = fileStorage.getChars().length;
+		boolean inProblem = false; // is i currently inside a problem?
+		for (int i=0; i<n; i++) {
+			if (match(fileStorage.getChars(), i, ProblemStorage.beginProblem)) {
+				if (inProblem)
+					throw new RuntimeException("Encountered \\begin{problem} when inside a problem");
+				startList.add(i);
+				inProblem = true;
+			} else if (match(fileStorage.getChars(), i, ProblemStorage.endProblem)) {
+				if (!inProblem)
+					throw new RuntimeException("Encountered \\end{problem} when outside any problem");
+				inProblem = false;
+				stopList.add(i + ProblemStorage.endProblem.length);
+			}
+		}
 		if (inProblem)
-		    throw new RuntimeException
-			("Encountered \\begin{problem} when inside a problem");
-		startList.add(i);
-		inProblem = true;
-	    } else if (match(chars, i, endProblem)) {
-		if (!inProblem)
-		    throw new RuntimeException
-			("Encountered \\end{problem} when outside any problem");
-		inProblem = false;
-		stopList.add(i + endProblem.length);
-	    }
-	}
-	if (inProblem)
-	    throw new RuntimeException
-		("Missing \\endProblem for last problem");
-	int nprob = startList.size();
-	assert nprob == stopList.size();
-	probStarts = new int[nprob];
-	probStops = new int[nprob];
-	for (int i=0; i<nprob; i++)
-	    probStarts[i] = startList.get(i);
-	for (int i=0; i<nprob; i++)
-	    probStops[i] = stopList.get(i);
+			throw new RuntimeException ("Missing \\endProblem for last problem");
+		int nprob = startList.size();
+		assert nprob == stopList.size();
+
+		problemStorage.setProblems(startList, stopList, nprob);
     }
 }

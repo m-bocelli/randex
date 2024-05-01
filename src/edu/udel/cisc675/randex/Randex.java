@@ -23,6 +23,8 @@ public class Randex {
 
     // The other modules that will be instaniated and executed...
     
+	private FileStorage fileStorage;
+	private ProblemStorage problemStorage;
     private Input input;
     private FindProblems findProblems;
     private FindAnswers findAnswers;
@@ -33,68 +35,78 @@ public class Randex {
     /* Constructs new instance by setting filename and see fields;
        does nothing else. */
     public Randex(String filename, long seed) {
-	this.filename = filename;
-	this.seed = seed;
+		this.filename = filename;
+		this.seed = seed;
     }
 
     /* Prints a 1d-array of ints (for debugging) */
     private static void print(PrintStream out, int[] a) {
-	out.print("{ ");
-	for (int x:a) out.print(x+" ");
-	out.print("}");
+		out.print("{ ");
+		for (int x:a) out.print(x+" ");
+		out.print("}");
     }
 
     /* Prints a 2d-array of ints (for debugging) */
     private static void print(PrintStream out, int[][] a2d) {
-	out.print("{ ");
-	for (int[] a:a2d) {
-	    print(out, a);
-	    out.print(" ");
-	}
-	out.print("}");	
+		out.print("{ ");
+		for (int[] a:a2d) {
+			print(out, a);
+			out.print(" ");
+		}
+		out.print("}");	
     }
 
     /* Executes a complete tasks: instantiates all the modules with
        the approriate arguments, executes them in the appropriate
        order, writing output to standard out for now. */
     private void execute() throws FileNotFoundException, IOException {
-	PrintStream out = System.out;
-	rand = new Random(seed);
-	input = new Input(filename);
-	input.execute();
-	findProblems = new FindProblems(input.chars);
-	findProblems.execute();
-	int nprob = findProblems.probStarts.length;
-	findAnswers = new FindAnswers(input.chars, findProblems.probStarts,
-				      findProblems.probStops);
-	findAnswers.execute();
-	randomizeProblems = new RandomizeProblems(nprob, rand);
-	randomizeProblems.execute();
-	int[] numAnswers = new int[nprob];
-	for (int i=0; i<nprob; i++)
-	    numAnswers[i] = findAnswers.answerStarts[i].length;
-	randomizeAnswers = new RandomizeAnswers(numAnswers, rand);
-	randomizeAnswers.execute();
-	Output output = new Output
-	    (out, input.chars, findProblems.probStarts, findProblems.probStops,
-	     findAnswers.answerStarts, findAnswers.answerStops,
-	     randomizeProblems.probPerm,
-	     randomizeAnswers.answerPerms);
-	output.execute();
+		PrintStream out = System.out;
+
+		rand = new Random(seed);
+
+		fileStorage = FileStorage.getInstance();
+		problemStorage = ProblemStorage.getInstace();
+
+		input = new Input(filename, fileStorage);
+		input.execute();
+
+		findProblems = new FindProblems(fileStorage, problemStorage);
+		findProblems.execute();
+
+		int nprob = problemStorage.getProblemStarts.length;
+
+		findAnswers = new FindAnswers(fileStorage, problemStorage);
+		findAnswers.execute();
+
+		randomizeProblems = new RandomizeProblems(nprob, rand);
+		randomizeProblems.execute();
+
+		int[] numAnswers = new int[nprob];
+		for (int i=0; i<nprob; i++)
+			numAnswers[i] = findAnswers.answerStarts[i].length;
+
+		randomizeAnswers = new RandomizeAnswers(numAnswers, rand);
+		randomizeAnswers.execute();
+
+		Output output = new Output
+			(out, fileStorage, findProblems.probStarts, findProblems.probStops,
+			findAnswers.answerStarts, findAnswers.answerStops,
+			randomizeProblems.probPerm,
+			randomizeAnswers.answerPerms);
+		output.execute();
     }
 
     /* Main method: command line arguments are: filename, seed */
-    public final static void main(String[] args)
-	throws FileNotFoundException, IOException {
-	if (args.length != 2) {
-	    System.out.println
-		("Usage: java edu.udel.cisc675.randex.Test <filename> <seed>");
-	    System.exit(1);
-	}
-	String filename = args[0];
-	long seed = Long.decode(args[1]);
-	//System.out.println("Seed = "+seed);
-	Randex randex = new Randex(filename, seed);
-	randex.execute();
+    public final static void main(String[] args) throws FileNotFoundException, IOException {
+		if (args.length != 2) {
+			System.out.println
+			("Usage: java edu.udel.cisc675.randex.Test <filename> <seed>");
+			System.exit(1);
+		}
+		String filename = args[0];
+		long seed = Long.decode(args[1]);
+		//System.out.println("Seed = "+seed);
+		Randex randex = new Randex(filename, seed);
+		randex.execute();
     }
 }

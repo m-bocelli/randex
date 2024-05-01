@@ -10,7 +10,7 @@ public class Output {
     PrintStream out;
 
     /* The characters of the original file, from module Input */
-    char[] chars;
+    FileStorage fileStorage;
 
     /* Start indexes of problems, from module FindProblems */
     int[] probStarts;
@@ -33,25 +33,25 @@ public class Output {
 
     /* Constructs new instance of Output from given fields; only sets
        fields and does nothing else */
-    public Output(PrintStream out, char[] chars,
+    public Output(PrintStream out, FileStorage fileStorage,
 		  int[] probStarts, int[] probStops,
 		  int[][] answerStarts, int[][] answerStops,
 		  int[] probPerm, int[][] answerPerms) {
-	this.out = out;
-	this.chars = chars;
-	this.probStarts = probStarts;
-	this.probStops = probStops;
-	this.answerStarts = answerStarts;
-	this.answerStops = answerStops;
-	this.probPerm = probPerm;
-	this.answerPerms = answerPerms;
+        this.out = out;
+        this.fileStorage = fileStorage;
+        this.probStarts = probStarts;
+        this.probStops = probStops;
+        this.answerStarts = answerStarts;
+        this.answerStops = answerStops;
+        this.probPerm = probPerm;
+        this.answerPerms = answerPerms;
     }
 
     /* Prints a range of characters to out, starting at start, ending
      * at stop-1 */
     private void printRange(int start, int stop) {
 	for (int i=start; i<stop; i++)
-	    out.print(chars[i]);
+	    out.print(fileStorage.getChar(i));
     }
 
     /* Prints the aid-th answer of problem pid */
@@ -77,7 +77,7 @@ public class Output {
     public void execute() {
 	int nprob = probStarts.length;
 	if (nprob == 0) {
-	    printRange(0, chars.length);
+	    printRange(0, fileStorage.getChars().length);
 	} else {
 	    printRange(0, probStarts[0]);
 	    for (int i=0; i<nprob; i++) {
@@ -85,7 +85,7 @@ public class Output {
 		if (i<nprob-1)
 		    printRange(probStops[i], probStarts[i+1]);
 	    }
-	    printRange(probStops[nprob-1], chars.length);
+	    printRange(probStops[nprob-1], fileStorage.getChars().length);
 	}
     }
 }
