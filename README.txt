@@ -1,77 +1,33 @@
+Michael Bocelli
 
 		     Randex: The Exam Randomizer
 
-Randex is used to randomly shuffle the problems and answers of a
-multiple choice exam.  The given exam is in LaTeX format and
-consists of the following sections, in order:
+Critique of Design v1
 
- 1. possible text not including "\begin{problem}" or "\end{problem}"
- 2. a sequence of problems
- 3. possible text not including "\begin{problem}" or "\end{problem}"
+    Perhaps the most glaring design flaw of v1 is the lack of information hiding, a criteria of modularization 
+    emphasized in papers like "On the Criteria To Be Used in Decomposing Systems into Modules" by D.L. Parnas.
+    For example, a design decision here was to store the start and stop indices of each problem and answer in four
+    different array data structures. However, this decision is exposed in 4 different modules 
+    (FindAnswers, FindProblems, Output, and Randex), meaning if one was to update how the data is stored, all of
+    these modules would need to be updated. This decision of data storage should be hidden such that when changed,
+    no other modules need to be altered as a result.
 
-Each problem has the following form:
+    The system also violates one of Parnas's points in how a lack of subsets and extensions in a system can manifest
+    (mentioned in his paper "Designing Software for Ease of Extension and Contraction"). This would be "Components That
+    Perform More than One Function". A clear example of this is the toArray(...) method within FindAnswers. This is a simpler
+    component which can be used in many others that would not need to use FindAnswers, so it would best be moved to a utility
+    component and provided as an interface. Subsequently, the amount of functions that FindAnswers perform would be reduced.
 
- 1. \begin{problem}
- 2. possible text not including "\begin{enumerate}"
- 3. \begin{enumerate}
- 4. a sequence of answers
- 5. \end{enumerate}
- 6. possible text
- 7. \end{problem}
+    Additionally, there is potential for code to be reused across compnents with new uses relations. Specifically,
+    components FindProblems and FindAnswers both implement a similar match(...) method, whereas RandomizeAnswers and 
+    RandomizeProblems both implement the Fisher-Yates shuffle. By hiding these design decisions in separate components
+    that the aforementioned classes could use via interfaces, the program could have a reduced learning time for developers
+    new to the code base, as mentioned by Gamma et al. in their paper "Design Patterns: Abstraction and Reuse of
+    Object-Oriented Design".
 
-Each answer has the following form:
- 1. \item
- 2. text not including "\item" or "\end{enumerate}"
+Desgin v2
+    
 
-See exam1.tex for a typical example.
-
-Randex is a command line tool which takes 2 arguments: the name of the
-file containing the exam in the format described above, and a long
-integer which is the seed to Java's random number generator.  It reads
-the file, randomly permutes the problems and answers to each problem,
-and then writes the output to stdout in the same format as the
-original file.
-
-Design: Randex was developed using a modular design.  The modules are:
-
-  1. Input
-  2. FindProblems
-  3. FindAnswers
-  4. RandomizeProblems
-  5. RandomizeAnswers
-  6. Output
-  7. Randex (main class)
-
-Each module is a Java class.  See the comments in the source files to
-see what each module does.
-
-Potential changes/additions: here are some ways the app may have to
-change in the future:
-
-  0. Better/more robust error reporting.
-
-  1. Ignore text in LaTeX comments (comments start with % and extend
-     to end of line)
-
-  2. An exam may be divided into sections.  Randomize within each
-     section but do not move a problem from one section to another.
-
-  3. Provide a way for the user to indicate which answer is correct.
-     Make Randex keep track of the correct answers as it permutes.
-     Produce an answer key at the end, in either plain text or
-     Scantron format.
-
-  4. Allow the user to produce n random exams instead of just one.
-
-  5. Tell Randex to select a random subset of problems, rather than
-     all problems.  The subset must meet some user-specified
-     constraints.  For example, the user might associate points to
-     each problem and the constraint may be to select a set of
-     problems for which the total number of points is as specified.
-
-  6. Allow some "free form" (short essay) problems in addition to
-     multiple choice.
- 
 To build: change in to directory src/edu/udel/cisc675/randex and type
 "make".  Type "make test1" to run a test.  See the Makefile for
 further details.
